@@ -1,0 +1,29 @@
+name: Build and Deploy to ACR
+
+on:
+  push:
+    branch:
+      - main
+
+ENV:
+  AZURE_CONTAINER_REGISTRY: ospkrepo.azurecr.io
+  IMAGE: ospkrepo.azurecr.io/ospk-web-app
+
+jobs:
+  build-deploy:
+    name: Build Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+      uses: actions/checkout@v3
+
+      - name: Log into Acr
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.ospkrepo.azurecr.io }}
+        username: ${{ secrets.UNAME }}
+        password: ${{ secrets.PWD }}
+      - run:
+        docker build -t ${{ IMAGE }}:${{ github.sha }}
+        docker push ${{ IMAGE }}:${{ github.sha }}
+        

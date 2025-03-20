@@ -64,7 +64,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Reward points earned by customers</h1>
+      <h1>Total Reward points earned by customers</h1>
       <table>
         <thead>
           <tr>

@@ -1,0 +1,29 @@
+name: Build and Deploy 
+
+on: [push]
+
+branch:
+  - main
+
+ENV:
+  AZURE_CONTAINER_REGISTRY: ospkrepo.azurecr.io
+  IMAGE: ospkrepo.azurecr.io/ospk-web-app
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy NodeJS image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+      uses: actions/checkout@v2
+
+      - name: Login into ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: ospkrepo.azurecr.io
+        username: ${{ secrets.UNAME }}
+        password: ${{ secrets.PWD }}
+     - run: |
+        docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}:${{ github.sha }}
+        docker push ${{ env.AZURE_CONTAINER_REGISTRY }}:${{ github.sha }}
+    
